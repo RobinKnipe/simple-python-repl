@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Python REPL (Pyodide)</title>
+  <script type="module">
+    let pyodide;
+    const inputEl = document.getElementById("input");
+    const outputEl = document.getElementById("output");
+
+    const { loadPyodide } = await import("https://cdn.jsdelivr.net/pyodide/v0.25.1/full/pyodide.mjs");
+    pyodide = await loadPyodide();
+
+    window.runPython = async () => {
+      const code = inputEl.value;
+      try {
+        const result = await pyodide.runPythonAsync(code);
+        outputEl.textContent += `>>> ${code}\n${result ?? ""}\n`;
+      } catch (err) {
+        outputEl.textContent += `>>> ${code}\nError: ${err}\n`;
+      }
+    };
+  </script>
+  <style>
+    body { font-family: monospace; padding: 1em; }
+    textarea { width: 100%; height: 5em; }
+    pre { background: #eee; padding: 1em; }
+  </style>
+</head>
+<body>
+  <h2>Python REPL (Pyodide)</h2>
+  <textarea id="input" placeholder="Type Python code here..."></textarea><br>
+  <button onclick="runPython()">Run</button>
+  <pre id="output"></pre>
+</body>
+</html>
